@@ -50,17 +50,9 @@ http {
   <% if proxies.any? %>
     resolver <%= resolver %>;
   <% end %>
-
-  <%= 'include prerender.conf;' if prerender %>
-
     location / {
       mruby_post_read_handler /app/bin/config/lib/ngx_mruby/headers.rb cache;
-
-    <%if prerender %>
-      set $fallback @prerender;
-    <%else%>
       mruby_set $fallback /app/bin/config/lib/ngx_mruby/routes_fallback.rb cache;
-    <%end>
     <% if clean_urls %>
       try_files $uri.html $uri $uri/ $fallback;
     <% else %>
@@ -83,20 +75,23 @@ http {
   <% routes.each do |route, path| %>
     location ~ ^<%= route %>$ {
       set $route <%= route %>;
-      mruby_set $path /app/bin/config/lib/ngx_mruby/routes_path.rb cache;
       mruby_set $fallback /app/bin/config/lib/ngx_mruby/routes_fallback.rb cache;
     <% if clean_urls %>
-      try_files $uri.html $uri $uri/ $path $fallback;
+      try_files $uri.html $uri $uri/ $fallback;
     <% else %>
-      try_files $uri $path $fallback;
+      try_files $uri $fallback;
     <% end %>
     }
   <% end %>
 
+  <% if prerender %>
+    include prerender.conf;
+  <% else %>
   # need this b/c setting $fallback to =404 will try #{root}=404 instead of returning a 404
   location @404 {
     return 404;
   }
+  <% end %>
 
   # fallback proxy named match
   <% proxies.each do |location, hash| %>
