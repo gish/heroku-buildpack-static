@@ -1,5 +1,5 @@
 location @404 {
-  proxy_set_header X-Prerender-Token <%= prerender['token'] %>;
+  proxy_set_header X-Prerender-Token <%= ENV['PRERENDER_TOKEN'] || prerender['token'] %>;
   set $prerender 0;
 
   if ($http_user_agent ~* "baiduspider|twitterbot|facebookexternalhit|Google.*snippet|rogerbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest|slackbot|vkShare|W3C_Validator") {
@@ -21,7 +21,7 @@ location @404 {
   if ($prerender = 1) {
     #setting prerender as a variable forces DNS resolution since nginx caches IPs
     #and doesnt play well with load balancing
-    set $prerender <%= prerender['server_name'] %>;
+    set $prerender <%= ENV['PRERENDER_HOST'] || prerender['server_name'] %>;
     <% if https_only %>
       rewrite .* /https://$host$request_uri? break;
     <% else %>
