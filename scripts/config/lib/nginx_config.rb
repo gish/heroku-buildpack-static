@@ -8,7 +8,7 @@ class NginxConfig
     encoding: "UTF-8",
     clean_urls: false,
     https_only: false,
-    worker_connections: 512,
+    worker_connections: 2048,
     resolver: "8.8.8.8",
     logging: {
       "access" => true,
@@ -19,7 +19,7 @@ class NginxConfig
   def initialize(json_file)
     json = {}
     json = JSON.parse(File.read(json_file)) if File.exist?(json_file)
-    json["worker_connections"] ||= ENV["WORKER_CONNECTIONS"] || DEFAULT[:worker_connections]
+    json["worker_connections"] ||= DEFAULT[:worker_connections]
     json["port"] ||= ENV["PORT"] || 5000
     json["root"] ||= DEFAULT[:root]
     json["encoding"] ||= DEFAULT[:encoding]
