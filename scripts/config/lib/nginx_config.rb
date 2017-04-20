@@ -56,6 +56,7 @@ class NginxConfig
     end
 
     json["error_page"] ||= nil
+    json["prerender"] ||= nil
     json["debug"] = ENV['STATIC_DEBUG']
 
     logging = json["logging"] || {}
@@ -70,7 +71,6 @@ class NginxConfig
     end
     nameservers << [DEFAULT[:resolver]] unless nameservers.empty?
     json["resolver"] = nameservers.join(" ")
-
     json.each do |key, value|
       self.class.send(:define_method, key) { value }
     end
