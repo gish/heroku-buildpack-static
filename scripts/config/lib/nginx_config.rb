@@ -51,6 +51,14 @@ class NginxConfig
     json["routes"] = NginxConfigUtil.parse_routes(json["routes"])
 
     json["redirects"] ||= {}
+    if json["redirects_map"]
+      if File.exist?(json["redirects_map"])
+        redirects_map_json = JSON.parse(File.read(json["redirects_map"]))
+        json["redirects"] = json["redirects"].merge redirects_map_json["redirects"]
+      else
+        raise "A file was configured in the 'redirects_map' entry that does not exist"
+      end
+    end
     json["redirects"].each do |loc, hash|
       json["redirects"][loc].merge!("url" => NginxConfigUtil.interpolate(hash["url"], ENV))
     end
