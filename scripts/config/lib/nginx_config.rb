@@ -55,6 +55,7 @@ class NginxConfig
       if File.exist?(json["redirects_map"])
         redirects_map_json = JSON.parse(File.read(json["redirects_map"]))
         json["redirects"] = json["redirects"].merge redirects_map_json["redirects"]
+        puts json["redirects"]
       else
         raise "A file was configured in the 'redirects_map' entry that does not exist"
       end
