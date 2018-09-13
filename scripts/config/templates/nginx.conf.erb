@@ -36,6 +36,12 @@ http {
 
   #Must read the body in 5 seconds.
   client_body_timeout 5;
+  map $uri $new_uri {
+    default "";
+  <% redirects_map.each do |old_url, new_url_info| %>
+    <%= old_url %> <%= new_url_info %>;
+  <% end %>
+  }
 
   server {
     listen <%= port %> reuseport;
@@ -50,12 +56,6 @@ http {
   <% if proxies.any? %>
     resolver <%= resolver %>;
   <% end %>
-
-  map $uri $new_uri {
-  <% redirects_map.each do |old_url, new_url_info| %>
-    <%= old_url %> <%= new_url_info %>;
-  <% end %>
-  }
 
     if ($new_uri) {
       rewrite ^ $new_uri permanent;
