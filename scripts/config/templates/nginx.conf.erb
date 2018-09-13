@@ -51,11 +51,11 @@ http {
     resolver <%= resolver %>;
   <% end %>
 
-    map $uri $new_uri {
-    <% redirects_map.each do |old_url, new_url_info| %>
-      <%= old_url %> <%= new_url_info %>
-    <% end %>
-    }
+  map $uri $new_uri {
+  <% redirects_map.each do |old_url, new_url_info| %>
+    <%= old_url %> <%= new_url_info %>;
+  <% end %>
+  }
 
     if ($new_uri) {
       rewrite ^ $new_uri permanent;
