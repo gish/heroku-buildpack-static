@@ -7,6 +7,12 @@ events {
   worker_connections <%= worker_connections %>;
 }
 
+map $uri $new_uri {
+<% json["redirects_map"].each do |old_url, new_url_info| %>
+  <%= old_url %> <%= new_url_info %>
+<% end %>
+}
+
 http {
   gzip on;
   gzip_comp_level 6;
@@ -50,6 +56,10 @@ http {
   <% if proxies.any? %>
     resolver <%= resolver %>;
   <% end %>
+
+    if ($new_uri) {
+      rewrite ^ $new_uri permanent;
+    }
 
     location / {
       mruby_post_read_handler /app/bin/config/lib/ngx_mruby/headers.rb cache;
