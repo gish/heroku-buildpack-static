@@ -60,6 +60,8 @@ class NginxConfig
       else
         raise "A file was configured in the 'redirects_map_file' entry that does not exist"
       end
+    else
+      json["redirects_map"] = {}
     end
     json["error_page"] ||= nil
     json["debug"] = ENV['STATIC_DEBUG']
