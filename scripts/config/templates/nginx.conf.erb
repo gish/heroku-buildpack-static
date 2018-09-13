@@ -8,7 +8,7 @@ events {
 }
 
 map $uri $new_uri {
-<% json["redirects_map"].each do |old_url, new_url_info| %>
+<% redirects_map.each do |old_url, new_url_info| %>
   <%= old_url %> <%= new_url_info %>
 <% end %>
 }
