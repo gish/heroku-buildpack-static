@@ -7,12 +7,6 @@ events {
   worker_connections <%= worker_connections %>;
 }
 
-map $uri $new_uri {
-<% redirects_map.each do |old_url, new_url_info| %>
-  <%= old_url %> <%= new_url_info %>
-<% end %>
-}
-
 http {
   gzip on;
   gzip_comp_level 6;
@@ -42,6 +36,12 @@ http {
 
   #Must read the body in 5 seconds.
   client_body_timeout 5;
+
+  map $uri $new_uri {
+  <% redirects_map.each do |old_url, new_url_info| %>
+    <%= old_url %> <%= new_url_info %>
+  <% end %>
+  }
 
   server {
     listen <%= port %> reuseport;
